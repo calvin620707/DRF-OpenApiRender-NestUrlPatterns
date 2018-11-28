@@ -19,7 +19,6 @@ from rest_framework.compat import urlparse
 from rest_framework.schemas import get_schema_view
 from rest_framework.renderers import JSONOpenAPIRenderer
 from rest_framework.permissions import AllowAny
-from .views import hello
 
 class JSONOpenAPIDeepRenderer(JSONOpenAPIRenderer):
     def get_paths(self, document):
@@ -58,21 +57,11 @@ default_schema_view = get_schema_view(
     permission_classes=[AllowAny]
 )
 
-l3 = [
-    path('level3', hello)
-]
-
-verydeppurls = [
-    path('level2', include(l3))
-]
-
-deepurls = [
-    path('level1', include(verydeppurls), 'level1')
-]
-
-urlpatterns = [
-    path('hello/', hello),
-    path('level0', include(deepurls), 'level0'),
+urls = [
+    path('v1.0/', include(([path('app/', include('app.urls'))], 'v1.0'))),
+    path('v2.0/', include(([path('app/', include('app.urls'))], 'v2.0'))),
     path('default-schema.json', default_schema_view),
     path('deep-schema.json', schema_view),
 ]
+
+urlpatterns = [path('demo/', include(urls))]
